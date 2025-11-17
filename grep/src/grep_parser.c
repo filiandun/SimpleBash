@@ -114,7 +114,11 @@ static _gp_internal_status read_patterns_from_file(const char *file, grep_config
     size_t size = 0;
     while (read_next_line(file_reader, &line, &size) == FILE_READER_SUCCESS) {
         _gp_internal_status internal_status = add_pattern(line, config);
-        if (internal_status != _GP_SUCCESS) return internal_status;
+        free(line);
+        if (internal_status != _GP_SUCCESS) {
+            close_file(file_reader);
+            return internal_status; 
+        }
     }
 
     close_file(file_reader);
